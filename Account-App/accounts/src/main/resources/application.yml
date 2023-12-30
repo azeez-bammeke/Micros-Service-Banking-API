@@ -2,21 +2,10 @@ server:
   port: 8080
 
 spring:
-  config:
-    import: "optional:configserver:http://localhost:8071/"
-  datasource:
-    url: jdbc:mysql://10.0.0.32:3306/accounts
-    username: docker
-    password: docker
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  profiles:
-    active: "prod"
   application:
     name: "accounts"
+  profiles:
+    active: "prod"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-
-build:
-  version: "2.0-dev"

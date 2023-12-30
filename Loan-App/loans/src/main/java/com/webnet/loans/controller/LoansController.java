@@ -2,6 +2,7 @@ package com.webnet.loans.controller;
 
 import com.webnet.loans.constants.LoansConstants;
 import com.webnet.loans.dto.ErrorResponseDto;
+import com.webnet.loans.dto.LoansContactInfoDto;
 import com.webnet.loans.dto.LoansDto;
 import com.webnet.loans.dto.ResponseDto;
 import com.webnet.loans.service.ILoansService;
@@ -35,8 +36,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class LoansController {
 
+    private final ILoansService iLoansService;
+    public LoansController(ILoansService iLoansService) {
+        this.iLoansService = iLoansService;
+    }
+
     @Autowired
-    private ILoansService iLoansService;
+    private LoansContactInfoDto loansContactInfoDto;
 
     @Value("${build.version}")
     private String buildVersion;
@@ -175,4 +181,10 @@ public class LoansController {
         return ResponseEntity.ok(this.buildVersion);
     }
 
+    @GetMapping("/contact-info")
+    public ResponseEntity<LoansContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loansContactInfoDto);
+    }
 }

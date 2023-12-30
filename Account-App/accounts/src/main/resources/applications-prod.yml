@@ -4,4 +4,4 @@ spring:
       on-profile: prod
 
 build:
-  version: 2.9
+  version: "2.9"
