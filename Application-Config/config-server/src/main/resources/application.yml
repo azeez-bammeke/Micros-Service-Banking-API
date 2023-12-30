@@ -5,10 +5,14 @@ spring:
   application:
     name: "config-server"
   profiles:
-    active: native
+    active: git
   cloud:
     config:
       server:
-        native:
-          search-locations: "classpath:/config"
+        git:
+          uri: "https://github.com/azeez-bammeke/webnet-config.git"
+          default-label: master
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
 
