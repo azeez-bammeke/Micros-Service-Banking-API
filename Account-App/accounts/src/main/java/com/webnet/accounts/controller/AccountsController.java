@@ -2,14 +2,17 @@ package com.webnet.accounts.controller;
 
 
 import com.webnet.accounts.constants.AccountConstants;
+import com.webnet.accounts.dto.AccountsContactInfoDto;
 import com.webnet.accounts.dto.CustomerDto;
 import com.webnet.accounts.dto.ResponseDto;
+import com.webnet.accounts.service.IAccountService;
 import com.webnet.accounts.service.imp.AccountServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +25,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AccountsController {
 
+    private final IAccountService accountService;
+
+    public AccountsController(IAccountService accountService) {
+        this.accountService = accountService;
+    }
+
     @Autowired
-    private AccountServiceImpl accountService;
+    private Environment environment;
+
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     @Value("${build.version}")
     private String buildVersion;
@@ -65,5 +77,11 @@ public class AccountsController {
         return ResponseEntity.ok(this.buildVersion);
     }
 
+    @GetMapping("/contact-info")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
+    }
 }
 

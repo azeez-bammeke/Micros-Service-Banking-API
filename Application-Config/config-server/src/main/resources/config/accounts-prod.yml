@@ -1,2 +1,12 @@
 build:
   version: "2.5-account-prod"
+
+accounts:
+  message: "Welcome to WbeNet Inc."
+  contactDetails:
+    name: "Gary Pay-Rent: Store Manager"
+    email: "gary-pay-rent@gmail.com"
+  onCallSupport:
+    - (555)666-1234
+    - (555)666-1234
+    - (555)666-1234

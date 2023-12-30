@@ -16,3 +16,6 @@ spring:
           clone-on-start: true
           force-pull: true
 
+
+encrypt:
+  key: "*sCUX{MZR(+AC.B<t<a)SnG'h:BzXX{]"
