@@ -1,0 +1,40 @@
+#can define any number of service
+services:
+  accounts:
+    image: "abammeke/accounts:accounts-v1"
+    container_name: account-services
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 700m #700 mb memory max
+    networks:
+      - webnet
+  loans:
+    image: "abammeke/loan:loan-v1"
+    container_name: loan-services
+    ports:
+      - "8082:8082"
+    deploy:
+      resources:
+        limits:
+          memory: 700m #700 mb memory max
+    networks:
+      - webnet
+  cards:
+    image: "abammeke/cards:cards-v1"
+    container_name: cards-services
+    ports:
+      - "8081:8081"
+    deploy:
+      resources:
+        limits:
+          memory: 700m #700 mb memory max
+    networks:
+      - webnet
+networks:
+  webnet:
+    driver: "bridge"
+
+
