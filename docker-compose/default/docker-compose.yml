@@ -1,29 +1,10 @@
 #can define any number of service
 services:
-  rabbit:
-    image: rabbitmq:3.12-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
-
   config-server:
-    image: "abammeke/config-server:config-server-v2"
+    image: "abammeke/config-server:config-server-v4"
     container_name: config-server
     ports:
       - "8071:8071"
-    depends_on:
-      rabbit:
-        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -35,7 +16,7 @@ services:
       service: microservice-base-config
 
   accounts:
-    image: "abammeke/accounts:accounts-v2"
+    image: "abammeke/accounts:accounts-v3"
     container_name: account-services
     ports:
       - "8080:8080"
@@ -45,9 +26,8 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
-
   loans:
-    image: "abammeke/loans:loans-v2"
+    image: "abammeke/loans:loans-v3"
     container_name: loan-services
     ports:
       - "8082:8082"
@@ -58,7 +38,7 @@ services:
       service: microservice-configserver-config
 
   cards:
-    image: "abammeke/cards:cards-v2"
+    image: "abammeke/cards:cards-v3"
     container_name: cards-services
     ports:
       - "8081:8081"
