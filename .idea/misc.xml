@@ -6,6 +6,7 @@
         <option value="$PROJECT_DIR$/Card-App/cards/pom.xml" />
         <option value="$PROJECT_DIR$/Loan-App/loans/pom.xml" />
         <option value="$PROJECT_DIR$/Account-App/accounts/pom.xml" />
+        <option value="$PROJECT_DIR$/service-discovery/eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/Application-Config/config-server/pom.xml" />
       </list>
     </option>
