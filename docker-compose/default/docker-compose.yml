@@ -16,7 +16,7 @@ services:
       service: microservice-base-config
 
   accounts:
-    image: "abammeke/accounts:accounts-v3"
+    image: "abammeke/accounts:accounts-v4"
     container_name: account-services
     ports:
       - "8080:8080"
@@ -26,8 +26,20 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
+  eurekaserver:
+    image: "abammeke/eurekaserver:eurekaserver-v4"
+    container_name: eurekaserver
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: eurekaserver
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8071/
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
   loans:
-    image: "abammeke/loans:loans-v3"
+    image: "abammeke/loans:loans-v4"
     container_name: loan-services
     ports:
       - "8082:8082"
@@ -38,7 +50,7 @@ services:
       service: microservice-configserver-config
 
   cards:
-    image: "abammeke/cards:cards-v3"
+    image: "abammeke/cards:cards-v4"
     container_name: cards-services
     ports:
       - "8081:8081"

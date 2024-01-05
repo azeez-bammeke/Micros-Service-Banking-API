@@ -8,11 +8,9 @@ import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
-@EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
-@EnableConfigurationProperties(value = {AccountsContactInfoDto.class})
 @OpenAPIDefinition(info = @Info(
         title = "Account microservice API Documentation",
         description ="WebNet Bank Accounts microservice REST API Documentation",
@@ -24,6 +22,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                 name = "Hayzo 2.0",
                 url = "www.webnet.com")
 ))
+@SpringBootApplication
+@EnableFeignClients
+@EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@EnableConfigurationProperties(value = {AccountsContactInfoDto.class})
 public class AccountsApplication {
 
     public static void main(String[] args) {
