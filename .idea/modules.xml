@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/Card-App/cards/cards.iml" filepath="$PROJECT_DIR$/Card-App/cards/cards.iml" />
       <module fileurl="file://$PROJECT_DIR$/Application-Config/config-server/config-server.iml" filepath="$PROJECT_DIR$/Application-Config/config-server/config-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-discovery/eureka-server/eureka-server.iml" filepath="$PROJECT_DIR$/service-discovery/eureka-server/eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-discovery/eureka-server/eurekaserver.iml" filepath="$PROJECT_DIR$/service-discovery/eureka-server/eurekaserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/Loan-App/loans/loans.iml" filepath="$PROJECT_DIR$/Loan-App/loans/loans.iml" />
     </modules>
   </component>
