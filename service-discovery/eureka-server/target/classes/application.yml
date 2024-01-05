@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: "eurekaserver"
+  profiles:
+    active: default
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+
+
+#Run springboot from command line passing the profile
+#mvn spring-boot:run -D"spring-boot.run.profiles"=dev

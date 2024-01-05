@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: "loans"
+  datasource:
+    url: jdbc:mysql://10.0.0.32:3306/loans
+    username: docker
+    password: docker
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+loans:
+  message: "Welcome to WbeNet Inc. Loan Prod"
+  contactDetails:
+    name: "Gary Pay-Rent: Store Manager"
+    email: "gary-pay-rent@gmail.com"
+  onCallSupport:
+    - (555)666-1234
+    - (555)666-1234
+    - (555)666-1234
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:  "*"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+build:
+  version: "2.9-loan-prod"
