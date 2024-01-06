@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/Application-Config/config-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Card-App/cards/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Card-App/cards/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayServer/gatewayserver/gatewayserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayServer/gatewayserver/gatewayserver/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Loan-App/loans/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Loan-App/loans/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service-discovery/eureka-server/src/main/java" charset="UTF-8" />
