@@ -6,9 +6,3 @@ spring:
     name: "gatewayserver"
   config:
     import: "optional:configserver:http://localhost:8071/"
-
-logging:
-  level:
-    com:
-      webnet:
-        gatewayserver: DEBUG

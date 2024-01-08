@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/Application-Config/config-server/pom.xml" />
         <option value="$PROJECT_DIR$/service-discovery/eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/GatewayServer/gatewayserver/gatewayserver/pom.xml" />
+        <option value="$PROJECT_DIR$/GatewayServer/gatewayserver/pom.xml" />
       </list>
     </option>
   </component>
