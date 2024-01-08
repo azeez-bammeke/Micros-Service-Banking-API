@@ -2,6 +2,10 @@ FROM openjdk:21-slim-bullseye
 #Information around who maintains the image
 MAINTAINER webnet.com
 
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+
 # Add the application's jar to the image
 COPY target/cards-0.0.1-SNAPSHOT.jar cards-0.0.1-SNAPSHOT.jar
 

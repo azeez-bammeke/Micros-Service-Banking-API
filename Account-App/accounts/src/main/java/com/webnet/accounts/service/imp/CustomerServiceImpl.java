@@ -15,11 +15,13 @@ import com.webnet.accounts.service.ICustomerService;
 import com.webnet.accounts.service.client.CardsFeignClient;
 import com.webnet.accounts.service.client.LoansFeignClient;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CustomerServiceImpl implements ICustomerService {
     private AccountRepository accountRepository;
     private CustomerRepository customerRepository;
@@ -27,7 +29,7 @@ public class CustomerServiceImpl implements ICustomerService {
     private LoansFeignClient loansFeignClient;
 
 
-    public CustomerDetailsDto fetchCustomerDetails(String mobileNumber) {
+    public CustomerDetailsDto fetchCustomerDetails(String correlationId, String mobileNumber) {
         Customer customer = customerRepository.findByMobileNumber(mobileNumber)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
@@ -42,11 +44,11 @@ public class CustomerServiceImpl implements ICustomerService {
         customerDetailsDto.setAccountDetails(AccountMapper
                 .mapToAccountsDto(accounts, new AccountDto()));
 
-        ResponseEntity<LoansDto> loansDto = loansFeignClient.fetchLoanDetails(mobileNumber);
+        ResponseEntity<LoansDto> loansDto = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
 
         customerDetailsDto.setLoanDetails(loansDto.getBody());
 
-        ResponseEntity<CardsDto> cardsDto = cardsFeignClient.fetchCardDetails(mobileNumber);
+        ResponseEntity<CardsDto> cardsDto = cardsFeignClient.fetchCardDetails(correlationId, mobileNumber);
         customerDetailsDto.setCardDetails(cardsDto.getBody());
         return customerDetailsDto;
     }
