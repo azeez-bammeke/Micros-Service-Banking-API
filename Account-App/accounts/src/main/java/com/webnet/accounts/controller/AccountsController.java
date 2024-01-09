@@ -7,6 +7,7 @@ import com.webnet.accounts.dto.CustomerDto;
 import com.webnet.accounts.dto.ResponseDto;
 import com.webnet.accounts.service.IAccountService;
 import com.webnet.accounts.service.imp.AccountServiceImpl;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -82,9 +83,11 @@ public class AccountsController {
       return ResponseEntity.ok(this.buildVersion);
     }
 
-    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
-        log.debug("getBuildInfoFallback() method invoked");
-        return ResponseEntity.ok("0.9");
+    @GetMapping("/java-version")
+    @RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
+    public ResponseEntity<String> getJavaVersion() {
+        log.debug("getJavaVersion() method invoked");
+        return ResponseEntity.ok(this.environment.getProperty("JAVA_HOME"));
     }
 
     @GetMapping("/contact-info")
@@ -92,6 +95,16 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(accountsContactInfoDto);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        log.debug("getBuildInfoFallback() method invoked");
+        return ResponseEntity.ok("0.9");
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        log.debug("getJavaVersionFallback() method invoked");
+        return ResponseEntity.ok("JDK 21");
     }
 }
 
