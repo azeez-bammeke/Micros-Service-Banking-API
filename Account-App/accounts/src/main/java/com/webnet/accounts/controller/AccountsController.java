@@ -7,9 +7,11 @@ import com.webnet.accounts.dto.CustomerDto;
 import com.webnet.accounts.dto.ResponseDto;
 import com.webnet.accounts.service.IAccountService;
 import com.webnet.accounts.service.imp.AccountServiceImpl;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Validated
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Slf4j
 public class AccountsController {
 
     private final IAccountService accountService;
@@ -73,8 +76,15 @@ public class AccountsController {
     }
 
     @GetMapping("/version")
-    public ResponseEntity<String> getBuildVersion() {
-        return ResponseEntity.ok(this.buildVersion);
+    @Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
+    public ResponseEntity<String> getBuildInfo() {
+        log.debug("getBuildInfo() method invoked");
+      return ResponseEntity.ok(this.buildVersion);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        log.debug("getBuildInfoFallback() method invoked");
+        return ResponseEntity.ok("0.9");
     }
 
     @GetMapping("/contact-info")
