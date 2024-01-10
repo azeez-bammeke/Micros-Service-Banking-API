@@ -49,8 +49,6 @@ public class GatewayserverApplication {
                         .filters(f -> f.rewritePath("/webnet/cards/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
                                 .addResponseHeader("X-Webnetnet-client-id", UUID.randomUUID().toString())
-                                .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-                                        .setKeyResolver(userKeyResolver()))
                         )
                         .uri("lb://CARDS"))
                 .build();
@@ -63,15 +61,4 @@ public class GatewayserverApplication {
                 .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build()).build());
     }
 
-    //ToDo - Rate limiter
-    @Bean
-    public RedisRateLimiter redisRateLimiter() {
-        return new RedisRateLimiter(1, 1, 1);
-    }
-
-    @Bean
-    KeyResolver userKeyResolver() {
-        return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("user"))
-                .defaultIfEmpty("anonymous");
-    }
 }
