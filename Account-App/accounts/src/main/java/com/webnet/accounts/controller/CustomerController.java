@@ -28,10 +28,10 @@ public class CustomerController {
             @RequestHeader("webnet-correlation-id") String correlationId,
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})",
                     message = "Phone number must be 10 digits") String mobileNumber) {
-        log.debug("webnet-correlation-id found: {}", correlationId);
+        log.debug("fetchCustomerDetails method start");
 
         CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetails(correlationId, mobileNumber);
-        log.info("Done fetching customers details: {}", customerDetailsDto.getAccountDetails().getAccountNumber());
+        log.debug("fetchCustomerDetails method end");
 
         return ResponseEntity.ok(customerDetailsDto);
     }

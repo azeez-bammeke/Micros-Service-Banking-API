@@ -90,6 +90,19 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  tempo:
+    image: grafana/tempo
+    container_name: tempo
+    command: -config.file /etc/tempo-config.yml
+    ports:
+      - "3110:3100"
+      - "4317:4317"
+    volumes:
+      - ../observability/tempo/tempo.yml:/etc/tempo-config.yml
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   grafana:
     image: grafana/grafana:latest
     environment:
@@ -187,39 +200,42 @@ services:
       service: network-deploy-service
 
   config-server:
-    image: "abammeke/config-server:config-server-v8"
+    image: "abammeke/config-server:config-server-v9"
     container_name: config-server
     ports:
       - "8071:8071"
     healthcheck:
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
-      interval: 10s
+      interval: 20s
       timeout: 5s
-      retries: 10
+      retries: 20
       start_period: 10s
     extends:
       file: common-config.yml
       service: microservice-base-config
+    environment:
+      OTEL_SERVICE_NAME: "config-server"
 
   eurekaserver:
-    image: "abammeke/eurekaserver:eurekaserver-v8"
+    image: "abammeke/eurekaserver:eurekaserver-v9"
     container_name: eurekaserver
     ports:
       - "8070:8070"
     healthcheck:
       test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
-      interval: 10s
+      interval: 20s
       timeout: 5s
-      retries: 10
+      retries: 20
       start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: eurekaserver
+      OTEL_SERVICE_NAME: "eurekaserver"
     extends:
       file: common-config.yml
       service: microservice-configserver-config
 
   accounts:
-    image: "abammeke/accounts:accounts-v8"
+    image: "abammeke/accounts:accounts-v9"
     container_name: accounts
     ports:
       - "8080:8080"
@@ -231,12 +247,13 @@ services:
       start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: accounts
+      OTEL_SERVICE_NAME: "accounts"
     extends:
       file: common-config.yml
       service: microservice-eureka-clients
 
   loans:
-    image: "abammeke/loans:loans-v8"
+    image: "abammeke/loans:loans-v9"
     container_name: loans
     ports:
       - "8082:8082"
@@ -248,12 +265,13 @@ services:
       start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: loans
+      OTEL_SERVICE_NAME: "loans"
     extends:
       file: common-config.yml
       service: microservice-eureka-clients
 
   cards:
-    image: "abammeke/cards:cards-v8"
+    image: "abammeke/cards:cards-v9"
     container_name: cards
     ports:
       - "8081:8081"
@@ -265,18 +283,20 @@ services:
       start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: cards
+      OTEL_SERVICE_NAME: "cards"
     extends:
       file: common-config.yml
       service: microservice-eureka-clients
 
   gatewayserver:
-    image: "abammeke/gatewayserver:gatewayserver-v8"
+    image: "abammeke/gatewayserver:gatewayserver-v9"
     container_name: gatewayserver
     ports:
       - "8072:8072"
     environment:
       SPRING_APPLICATION_NAME: gatewayserver
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eurekaserver:8070/eureka
+      OTEL_SERVICE_NAME: "gatewayserver"
     extends:
       file: common-config.yml
       service: microservice-configserver-config

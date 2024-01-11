@@ -7,6 +7,14 @@ spring:
     import: "optional:configserver:http://localhost:8071/"
 
 
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 
 #Run springboot from command line passing the profile
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
 #mvn spring-boot:run -D"spring-boot.run.profiles"=dev
