@@ -15,11 +15,6 @@ spring:
           timeout: 5
           clone-on-start: true
           force-pull: true
-#  rabbitmq:
-#    host: "localhost"
-#    port: 5672
-#    username: "guest"
-#    password: "guest"
 
 management:
   endpoints:
@@ -35,6 +30,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 encrypt:
   key: "*sCUX{MZR(+AC.B<t<a)SnG'h:BzXX{]"

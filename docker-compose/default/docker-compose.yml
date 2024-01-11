@@ -79,6 +79,17 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../observability/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   grafana:
     image: grafana/grafana:latest
     environment:
@@ -90,23 +101,12 @@ services:
     entrypoint:
       - sh
       - -euc
-      - |
-        mkdir -p /etc/grafana/provisioning/datasources
-        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
-        apiVersion: 1
-        datasources:
-          - name: Loki
-            type: loki
-            access: proxy
-            url: http://gateway:3100
-            jsonData:
-              httpHeaderName1: "X-Scope-OrgID"
-            secureJsonData:
-              httpHeaderValue1: "tenant1"
-        EOF
+      - |        
         /run.sh
     ports:
       - "3000:3000"
+    volumes:
+      - ../observability/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
     healthcheck:
       test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1" ]
       interval: 10s
@@ -187,7 +187,7 @@ services:
       service: network-deploy-service
 
   config-server:
-    image: "abammeke/config-server:config-server-v7"
+    image: "abammeke/config-server:config-server-v8"
     container_name: config-server
     ports:
       - "8071:8071"
@@ -202,7 +202,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "abammeke/eurekaserver:eurekaserver-v7"
+    image: "abammeke/eurekaserver:eurekaserver-v8"
     container_name: eurekaserver
     ports:
       - "8070:8070"
@@ -218,9 +218,9 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
-  accounts-instance-1:
-    image: "abammeke/accounts:accounts-v7"
-    container_name: accounts-instance-1
+  accounts:
+    image: "abammeke/accounts:accounts-v8"
+    container_name: accounts
     ports:
       - "8080:8080"
     healthcheck:
@@ -235,9 +235,9 @@ services:
       file: common-config.yml
       service: microservice-eureka-clients
 
-  loans-instance-1:
-    image: "abammeke/loans:loans-v7"
-    container_name: loans-instance-1
+  loans:
+    image: "abammeke/loans:loans-v8"
+    container_name: loans
     ports:
       - "8082:8082"
     healthcheck:
@@ -252,22 +252,11 @@ services:
       file: common-config.yml
       service: microservice-eureka-clients
 
-  loans-instance-2:
-    image: "abammeke/loans:loans-v7"
-    container_name: loans-instance-2
+  cards:
+    image: "abammeke/cards:cards-v8"
+    container_name: cards
     ports:
-      - "8083:8082"
-    environment:
-      SPRING_APPLICATION_NAME: loans
-    extends:
-      file: common-config.yml
-      service: microservice-eureka-clients
-
-  cards-instance-1:
-    image: "abammeke/cards:cards-v7"
-    container_name: cards-instance-1
-    ports:
-      - "8084:8081"
+      - "8081:8081"
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -280,19 +269,8 @@ services:
       file: common-config.yml
       service: microservice-eureka-clients
 
-  cards-instance-2:
-    image: "abammeke/cards:cards-v7"
-    container_name: cards-instance-2
-    ports:
-      - "8085:8081"
-    environment:
-      SPRING_APPLICATION_NAME: cards
-    extends:
-      file: common-config.yml
-      service: microservice-eureka-clients
-
   gatewayserver:
-    image: "abammeke/gatewayserver:gatewayserver-v7"
+    image: "abammeke/gatewayserver:gatewayserver-v8"
     container_name: gatewayserver
     ports:
       - "8072:8072"
@@ -303,11 +281,11 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
     depends_on:
-      accounts-instance-1:
+      accounts:
         condition: service_healthy
-      loans-instance-1:
+      loans:
         condition: service_healthy
-      cards-instance-1:
+      cards:
         condition: service_healthy
 
 networks:
