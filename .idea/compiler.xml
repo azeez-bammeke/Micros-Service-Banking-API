@@ -11,8 +11,9 @@
         <module name="eurekaserver" />
         <module name="config-server" />
         <module name="cards" />
-        <module name="accounts" />
         <module name="loans" />
+        <module name="accounts" />
+        <module name="message" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -22,6 +23,7 @@
       <module name="eurekaserver" target="19" />
       <module name="gatewayserver" target="19" />
       <module name="loans" target="19" />
+      <module name="message" target="19" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -32,6 +34,7 @@
       <module name="eurekaserver" options="-parameters" />
       <module name="gatewayserver" options="-parameters" />
       <module name="loans" options="-parameters" />
+      <module name="message" options="-parameters" />
     </option>
   </component>
 </project>

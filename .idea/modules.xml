@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/service-discovery/eureka-server/eurekaserver.iml" filepath="$PROJECT_DIR$/service-discovery/eureka-server/eurekaserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/GatewayServer/gatewayserver/gatewayserver.iml" filepath="$PROJECT_DIR$/GatewayServer/gatewayserver/gatewayserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/Loan-App/loans/loans.iml" filepath="$PROJECT_DIR$/Loan-App/loans/loans.iml" />
+      <module fileurl="file://$PROJECT_DIR$/message/message/message.iml" filepath="$PROJECT_DIR$/message/message/message.iml" />
     </modules>
   </component>
 </project>
