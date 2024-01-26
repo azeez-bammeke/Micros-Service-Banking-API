@@ -1,4 +1,4 @@
-package com.webnet.message.dto;
+package com.webnet.accounts.dto;
 
 /**
  *@param accountNumber

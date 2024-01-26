@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: "message"
-  cloud:
-    function:
-      definition: email|sms
+  profiles:
+    active: default
+  config:
+    import: "optional:configserver:http://localhost:8071/"

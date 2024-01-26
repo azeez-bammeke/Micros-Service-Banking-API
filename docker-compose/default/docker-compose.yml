@@ -1,5 +1,21 @@
 #can define any number of service
 services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.4
     container_name: keycloak
@@ -14,7 +30,7 @@ services:
       service: network-deploy-service
 
   config-server:
-    image: "abammeke/config-server:config-server-v11"
+    image: "abammeke/config-server:config-server-v12"
     container_name: config-server
     ports:
       - "8071:8071"
@@ -29,7 +45,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "abammeke/eurekaserver:eurekaserver-v11"
+    image: "abammeke/eurekaserver:eurekaserver-v12"
     container_name: eurekaserver
     ports:
       - "8070:8070"
@@ -45,8 +61,25 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
+  message:
+    image: "abammeke/message:message-v12"
+    container_name: message
+    ports:
+      - "9010:9010"
+    healthcheck:
+      test: "curl --fail --silent localhost:9010/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: message
+    extends:
+      file: common-config.yml
+      service: microservice-rabbit-mq
+
   accounts:
-    image: "abammeke/accounts:accounts-v11"
+    image: "abammeke/accounts:accounts-v12"
     container_name: accounts
     ports:
       - "8080:8080"
@@ -60,10 +93,13 @@ services:
       SPRING_APPLICATION_NAME: accounts
     extends:
       file: common-config.yml
-      service: microservice-eureka-clients
+      service: microservice-rabbit-mq
+    depends_on:
+      message:
+        condition: service_healthy
 
   loans:
-    image: "abammeke/loans:loans-v11"
+    image: "abammeke/loans:loans-v12"
     container_name: loans
     ports:
       - "8082:8082"
@@ -80,7 +116,7 @@ services:
       service: microservice-eureka-clients
 
   cards:
-    image: "abammeke/cards:cards-v11"
+    image: "abammeke/cards:cards-v12"
     container_name: cards
     ports:
       - "8081:8081"
@@ -97,7 +133,7 @@ services:
       service: microservice-eureka-clients
 
   gatewayserver:
-    image: "abammeke/gatewayserver:gatewayserver-v11"
+    image: "abammeke/gatewayserver:gatewayserver-v12"
     container_name: gatewayserver
     ports:
       - "8072:8072"

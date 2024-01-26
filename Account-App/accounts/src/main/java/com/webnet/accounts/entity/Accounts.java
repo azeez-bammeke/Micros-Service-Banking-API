@@ -23,6 +23,8 @@ public class Accounts extends BaseEntity {
 
     private String branchAddress;
 
+    private boolean communicationSw;
+
 }
 
 

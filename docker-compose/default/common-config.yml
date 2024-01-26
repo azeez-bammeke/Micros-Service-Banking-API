@@ -31,5 +31,15 @@ services:
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eurekaserver:8070/eureka
 
+  microservice-rabbit-mq:
+    extends:
+      service:
+        microservice-eureka-clients
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+
 
 
