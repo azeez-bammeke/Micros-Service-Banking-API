@@ -1,20 +1,41 @@
 #can define any number of service
 services:
-  rabbit:
-    image: rabbitmq:3.12-management
-    container_name: rabbitmq
+  kafka:
+    image: docker.io/bitnami/kafka:3.5
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     extends:
       file: common-config.yml
       service: network-deploy-service
+
+#  rabbit:
+#    image: rabbitmq:3.12-management
+#    container_name: rabbitmq
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    healthcheck:
+#      test: rabbitmq-diagnostics check_port_connectivity
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 10s
+#    extends:
+#      file: common-config.yml
+#      service: network-deploy-service
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.4
@@ -30,7 +51,7 @@ services:
       service: network-deploy-service
 
   config-server:
-    image: "abammeke/config-server:config-server-v12"
+    image: "abammeke/config-server:config-server-v13"
     container_name: config-server
     ports:
       - "8071:8071"
@@ -45,7 +66,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "abammeke/eurekaserver:eurekaserver-v12"
+    image: "abammeke/eurekaserver:eurekaserver-v13"
     container_name: eurekaserver
     ports:
       - "8070:8070"
@@ -62,7 +83,7 @@ services:
       service: microservice-configserver-config
 
   message:
-    image: "abammeke/message:message-v12"
+    image: "abammeke/message:message-v13"
     container_name: message
     ports:
       - "9010:9010"
@@ -76,10 +97,10 @@ services:
       SPRING_APPLICATION_NAME: message
     extends:
       file: common-config.yml
-      service: microservice-rabbit-mq
+      service: microservice-kafka-msg
 
   accounts:
-    image: "abammeke/accounts:accounts-v12"
+    image: "abammeke/accounts:accounts-v13"
     container_name: accounts
     ports:
       - "8080:8080"
@@ -93,13 +114,13 @@ services:
       SPRING_APPLICATION_NAME: accounts
     extends:
       file: common-config.yml
-      service: microservice-rabbit-mq
+      service: microservice-kafka-msg
     depends_on:
       message:
         condition: service_healthy
 
   loans:
-    image: "abammeke/loans:loans-v12"
+    image: "abammeke/loans:loans-v13"
     container_name: loans
     ports:
       - "8082:8082"
@@ -116,7 +137,7 @@ services:
       service: microservice-eureka-clients
 
   cards:
-    image: "abammeke/cards:cards-v12"
+    image: "abammeke/cards:cards-v13"
     container_name: cards
     ports:
       - "8081:8081"
@@ -133,7 +154,7 @@ services:
       service: microservice-eureka-clients
 
   gatewayserver:
-    image: "abammeke/gatewayserver:gatewayserver-v12"
+    image: "abammeke/gatewayserver:gatewayserver-v13"
     container_name: gatewayserver
     ports:
       - "8072:8072"

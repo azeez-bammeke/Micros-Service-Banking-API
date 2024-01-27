@@ -41,5 +41,16 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: "rabbit"
 
+  microservice-kafka-msg:
+    extends:
+      service:
+        microservice-eureka-clients
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
+
+
 
 

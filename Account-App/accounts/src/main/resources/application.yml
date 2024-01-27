@@ -8,3 +8,9 @@ spring:
     active: "prod"
   config:
     import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
