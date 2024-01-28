@@ -1,9 +1,9 @@
 #can define any number of service
 services:
   kafka:
-    image: docker.io/bitnami/kafka:3.5
+    image: docker.io/bitnami/kafka:latest
     ports:
-      - "9092:9092"
+      - "29092:9092"
     volumes:
       - "kafka_data:/bitnami"
     environment:
@@ -11,31 +11,17 @@ services:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
       # Listeners
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:29092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:29092
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR:1
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     extends:
       file: common-config.yml
       service: network-deploy-service
-
-#  rabbit:
-#    image: rabbitmq:3.12-management
-#    container_name: rabbitmq
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-#    healthcheck:
-#      test: rabbitmq-diagnostics check_port_connectivity
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 10s
-#    extends:
-#      file: common-config.yml
-#      service: network-deploy-service
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.4
@@ -87,17 +73,12 @@ services:
     container_name: message
     ports:
       - "9010:9010"
-    healthcheck:
-      test: "curl --fail --silent localhost:9010/actuator/health/readiness | grep UP || exit 1"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: message
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:29092"
     extends:
       file: common-config.yml
-      service: microservice-kafka-msg
+      service: microservice-eureka-clients
 
   accounts:
     image: "abammeke/accounts:accounts-v13"
@@ -112,12 +93,10 @@ services:
       start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: accounts
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:29092"
     extends:
       file: common-config.yml
-      service: microservice-kafka-msg
-    depends_on:
-      message:
-        condition: service_healthy
+      service: microservice-eureka-clients
 
   loans:
     image: "abammeke/loans:loans-v13"
@@ -176,3 +155,7 @@ services:
 networks:
   webnet:
     driver: "bridge"
+
+volumes:
+  kafka_data:
+    driver: local
